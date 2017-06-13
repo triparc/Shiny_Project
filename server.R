@@ -23,7 +23,7 @@ shinyServer(function(input, output) {
   # Replace the class outcome with 0 or 1, where benign is zero and malignant 1
   y <- ifelse(biopsy.v2$class == "malignant", 1, 0)
   biop.m <- melt(biopsy.v2, id.var = "class")
-  ind <- sample.int(n = nrow(biopsy.v2), size = floor(70*n/100), replace = F)
+  ind <- sample.int(n = nrow(biopsy.v2), size = floor(70*nrow(biopsy.v2)/100), replace = F)
   train <- biopsy.v2[ind,]
   test <- biopsy.v2[-ind,]
   glmmodel <-  glm(class ~ ., family = binomial, data = train)
@@ -61,6 +61,14 @@ shinyServer(function(input, output) {
   })
 
   output$glmfit <- renderPlot({
+    train <- biopsy.v2[ind,]
+    test <- biopsy.v2[-ind,]
+    glmmodel <-  glm(class ~ ., family = binomial, data = train)
+    p <- predict(glmmodel, newdata=test)
+    pr <- prediction(p, test$class)
+    prf <- performance(pr, measure = "tpr", x.measure = "fpr")
+    auc <- performance(pr, measure = "auc")
+    auc <- auc@y.values[[1]]
     plot(prf)
   })
   output$glmauc <- renderText({

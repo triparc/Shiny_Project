@@ -34,7 +34,6 @@ shinyUI(fluidPage(
       title="Model",
       sidebarPanel(  
       checkboxInput("showModel1", "Show/Hide Model 1", value = TRUE),
-      checkboxInput("showModel2", "Show/Hide Model 2", value = TRUE),
       submitButton("Submit")),
       mainPanel(
       h3("Model Fit for Tumor Type from GLM Model:"),
